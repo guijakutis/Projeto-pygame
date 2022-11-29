@@ -11,7 +11,8 @@ pygame.init()
 WIDTH = 600
 HEIGHT = 500
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Hello World!')
+pygame.display.set_caption('Penalty!')
+
 
 # ----- Inicia assets
 background = pygame.image.load('assets/gol.jpg').convert()
@@ -140,12 +141,13 @@ class Ball(pygame.sprite.Sprite):
             self.rect.top = 0
 
 all_sprites = pygame.sprite.Group()
-all_gk = pygame.sprite.Group()
+all_ball = pygame.sprite.Group()
 
 gk = Gk(gk_img)
 all_sprites.add(gk)
 ball = Ball(ball_img)
 all_sprites.add(ball)
+all_ball.add(ball)
 aim = Aim(aim_img)
 all_sprites.add(aim)
 
@@ -186,10 +188,9 @@ while state != DONE:
                     elif aim.x == 255:
                         x = 0
                     y = (aim.y - 250) / 10
-                    #ball.speedx = random.randint(-2, 2)
-                    #ball.speedy = random.randint(-6, -4)
-                    gk.speedx = random.randint(-7, 7) 
-                    gk.speedy = random.randint(-4, 4)
+                    ball.speedx = random.randint(-2, 2)
+                    ball.speedy = random.randint(-6, -4)
+                    gk.speedx = random.randint(-7, 7)
                 
             # Verifica se soltou alguma tecla.
             if event.type == pygame.KEYUP:
@@ -207,36 +208,68 @@ while state != DONE:
     all_sprites.update()
     
     if state == PLAYING:
-        hits = pygame.sprite.spritecollide(all_gk, ball, True)
+        hits = pygame.sprite.spritecollide(gk, all_ball, True)
         if len(hits) > 0:
-            # Toca o som da colisão
             ball.kill()
             lives -= 1
+            hits *= 0
             state = MISSING
+        elif ball.rect.top == 150 or ball.rect.right == WIDTH - 86 or ball.rect.left == 50:
+            score += 1
+            state = PLAYING
+            gk.speedx = 0
+            gk.speedy = 0
+            gk.rect.centerx = 280
+            gk.rect.centery = 255
+            ball.speedx = 0
+            ball.speedy = 0
+            ball.rect.centerx = WIDTH / 2
+            ball.rect.centery = HEIGHT - 15
+            all_sprites.add(ball)
+            all_ball.add(ball)
+        elif ball.rect.top == 170 or ball.rect.right == WIDTH - 95 or ball.rect.left == 80:
+            score += 1
+            state = PLAYING
+            gk.speedx = 0
+            gk.speedy = 0
+            gk.rect.centerx = 280
+            gk.rect.centery = 255
+            ball.speedx = 0
+            ball.speedy = 0
+            ball.rect.centerx = WIDTH / 2
+            ball.rect.centery = HEIGHT - 15
+            all_sprites.add(ball)
+            all_ball.add(ball)
     elif state == MISSING:
         now = pygame.time.get_ticks()
         if lives == 0:
             state = DONE
         else:
             state = PLAYING
+            gk.speedx = 0
+            gk.speedy = 0
+            gk.rect.centerx = 280
+            gk.rect.centery = 255
+            ball.speedx = 0
+            ball.speedy = 0
+            ball.rect.centerx = WIDTH / 2
+            ball.rect.centery = HEIGHT - 15
             all_sprites.add(ball)
+            all_ball.add(ball)
+
+
+    font = pygame.font.SysFont(None, 30)
+    text = font.render('SCORE: {0}'.format(score), True, (255, 255, 255))
+    text2 = font.render('CHANCES: {0}'.format(lives), True, (255, 255, 255))
 
     # ----- Gera saídas
     window.fill((0, 0, 0))  # Preenche com a cor branca
     window.blit(background, (0, 0))
+    window.blit(text, (10, 10))
+    window.blit(text2, (10, 40))
     # Desenhando
     all_sprites.draw(window)
 
-    #text_surface = ['score_font'].render("{:08d}".format(score), True, (255, 255, 0))
-    #text_rect = text_surface.get_rect()
-    #text_rect.midtop = (WIDTH / 2,  10)
-    #window.blit(text_surface, text_rect)
-
-    # Desenhando as vidas
-    #text_surface = ['score_font'].render(chr(9829) * lives, True, (255, 0, 0))
-    #text_rect = text_surface.get_rect()
-    #text_rect.bottomleft = (10, HEIGHT - 10)
-    #window.blit(text_surface, text_rect)
 
     # ----- Atualiza estado do jogo
     pygame.display.update()  # Mostra o novo frame para o jogador
