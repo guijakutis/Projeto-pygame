@@ -92,6 +92,7 @@ class Gk(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = img
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.centerx = gk_x
         self.rect.centery = gk_y
@@ -119,6 +120,7 @@ class Ball(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = img
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
@@ -206,13 +208,13 @@ while state != DONE:
     all_sprites.update()
     
     if state == PLAYING:
-        hits = pygame.sprite.spritecollide(gk, all_ball, True)
+        hits = pygame.sprite.spritecollide(gk, all_ball, True, pygame.sprite.collide_mask)
         if len(hits) > 0 or ball.rect.right == WIDTH or ball.rect.left == 0:
             ball.kill()
             lives -= 1
             hits *= 0
             state = MISSING
-        elif ball.rect.top == 130 or ball.rect.right == WIDTH - 86 or ball.rect.left == 70:
+        elif ball.rect.top == 130 and ball.rect.left >= 80:
             score += 1
             state = PLAYING
             gk.speedx = 0
@@ -225,7 +227,7 @@ while state != DONE:
             ball.rect.centery = HEIGHT - 20
             all_sprites.add(ball)
             all_ball.add(ball)
-        elif ball.rect.top == 130 or ball.rect.right == WIDTH - 95 or ball.rect.left == 80:
+        elif ball.rect.top == 130 and ball.rect.right <= WIDTH - 95:
             score += 1
             state = PLAYING
             gk.speedx = 0
@@ -238,6 +240,32 @@ while state != DONE:
             ball.rect.centery = HEIGHT - 20
             all_sprites.add(ball)
             all_ball.add(ball)
+        elif ball.rect.top >= 130 and ball.rect.right == WIDTH - 95:
+            score += 1
+            state = PLAYING
+            gk.speedx = 0
+            gk.speedy = 0
+            gk.rect.centerx = 280
+            gk.rect.centery = 255
+            ball.speedx = 0
+            ball.speedy = 0
+            ball.rect.centerx = WIDTH / 2
+            ball.rect.centery = HEIGHT - 20
+            all_sprites.add(ball)
+            all_ball.add(ball)
+        elif ball.rect.top >= 130 and ball.rect.left == 80:
+            score += 1
+            state = PLAYING
+            gk.speedx = 0
+            gk.speedy = 0
+            gk.rect.centerx = 280
+            gk.rect.centery = 255
+            ball.speedx = 0
+            ball.speedy = 0
+            ball.rect.centerx = WIDTH / 2
+            ball.rect.centery = HEIGHT - 20
+            all_sprites.add(ball)
+            all_ball.add(ball)    
     elif state == MISSING:
         now = pygame.time.get_ticks()
         if lives == 0:
