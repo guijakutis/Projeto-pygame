@@ -71,6 +71,8 @@ class Aim(pygame.sprite.Sprite):
         # Atualização da posição da bola
         self.rect.x += self.speedx
         self.rect.y += self.speedy
+        aim.x = self.rect.centerx
+        aim.y = self.rect.centery
 
         # Mantem dentro da tela
         if self.rect.right > WIDTH:
@@ -138,6 +140,7 @@ class Ball(pygame.sprite.Sprite):
             self.rect.top = 0
 
 all_sprites = pygame.sprite.Group()
+all_gk = pygame.sprite.Group()
 
 gk = Gk(gk_img)
 all_sprites.add(gk)
@@ -146,51 +149,94 @@ all_sprites.add(ball)
 aim = Aim(aim_img)
 all_sprites.add(aim)
 
+
+
+DONE = 0
+PLAYING = 1
+MISSING = 2
+state = PLAYING
+
+score = 0
+lives = 3
+
 # ===== Loop principal =====
-while game:
+while state != DONE:
     clock.tick(FPS)
     # ----- Trata eventos
     for event in pygame.event.get():
         # ----- Verifica consequências
         if event.type == pygame.QUIT:
-            game = False
-
-        if event.type == pygame.KEYDOWN:
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_UP:
-                aim.speedy -= 10
-            if event.key == pygame.K_DOWN:
-                aim.speedy += 10
-            if event.key == pygame.K_LEFT:
-                aim.speedx -= 10
-            if event.key == pygame.K_RIGHT:
-                aim.speedx += 10
-            if event.key == pygame.K_SPACE:
-                ball.speedx = aim_x - 255
-                ball.speedy = aim_y - 255
-                gk.speedx = random.randint(-7, 7) 
-                gk.speedy = random.randint(-4, 4)
+            state = DONE
+        if state == PLAYING:
+            if event.type == pygame.KEYDOWN:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_UP:
+                    aim.speedy -= 10
+                if event.key == pygame.K_DOWN:
+                    aim.speedy += 10
+                if event.key == pygame.K_LEFT:
+                    aim.speedx -= 10
+                if event.key == pygame.K_RIGHT:
+                    aim.speedx += 10
+                if event.key == pygame.K_SPACE:
+                    if aim.x > 255:
+                        x = aim.x - 600
+                    elif aim.x < 255:
+                        x = 600 - aim.x
+                    elif aim.x == 255:
+                        x = 0
+                    y = (aim.y - 250) / 10
+                    #ball.speedx = random.randint(-2, 2)
+                    #ball.speedy = random.randint(-6, -4)
+                    gk.speedx = random.randint(-7, 7) 
+                    gk.speedy = random.randint(-4, 4)
                 
-        # Verifica se soltou alguma tecla.
-        if event.type == pygame.KEYUP:
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_UP:
-                aim.speedy += 10
-            if event.key == pygame.K_DOWN:
-                aim.speedy -= 10            
-            if event.key == pygame.K_LEFT:
-                aim.speedx += 10
-            if event.key == pygame.K_RIGHT:
-                aim.speedx -= 10
+            # Verifica se soltou alguma tecla.
+            if event.type == pygame.KEYUP:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_UP:
+                    aim.speedy += 10
+                if event.key == pygame.K_DOWN:
+                    aim.speedy -= 10            
+                if event.key == pygame.K_LEFT:
+                    aim.speedx += 10
+                if event.key == pygame.K_RIGHT:
+                    aim.speedx -= 10
 
     # ----- Atualiza
     all_sprites.update()
+    
+    if state == PLAYING:
+        hits = pygame.sprite.spritecollide(all_gk, ball, True)
+        if len(hits) > 0:
+            # Toca o som da colisão
+            ball.kill()
+            lives -= 1
+            state = MISSING
+    elif state == MISSING:
+        now = pygame.time.get_ticks()
+        if lives == 0:
+            state = DONE
+        else:
+            state = PLAYING
+            all_sprites.add(ball)
 
     # ----- Gera saídas
     window.fill((0, 0, 0))  # Preenche com a cor branca
     window.blit(background, (0, 0))
     # Desenhando
     all_sprites.draw(window)
+
+    #text_surface = ['score_font'].render("{:08d}".format(score), True, (255, 255, 0))
+    #text_rect = text_surface.get_rect()
+    #text_rect.midtop = (WIDTH / 2,  10)
+    #window.blit(text_surface, text_rect)
+
+    # Desenhando as vidas
+    #text_surface = ['score_font'].render(chr(9829) * lives, True, (255, 0, 0))
+    #text_rect = text_surface.get_rect()
+    #text_rect.bottomleft = (10, HEIGHT - 10)
+    #window.blit(text_surface, text_rect)
 
     # ----- Atualiza estado do jogo
     pygame.display.update()  # Mostra o novo frame para o jogador
