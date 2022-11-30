@@ -30,7 +30,7 @@ pygame.mixer.music.set_volume(0.4)
 chutesom = pygame.mixer.Sound('assets/chutesom.mp3')
 golsom = pygame.mixer.Sound('assets/golacosom.mp3')
 finalsom = pygame.mixer.Sound('assets/finalsom.mp3')
-defesasom = pygame.mixer.Sound('assets/defessasom.mp3')
+defesasom = pygame.mixer.Sound('assets/defesasom.mp3')
 
 
 
