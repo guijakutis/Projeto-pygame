@@ -30,6 +30,8 @@ pygame.mixer.music.set_volume(0.4)
 chutesom = pygame.mixer.Sound('assets/chutesom.mp3')
 golsom = pygame.mixer.Sound('assets/golacosom.mp3')
 finalsom = pygame.mixer.Sound('assets/finalsom.mp3')
+defesasom = pygame.mixer.Sound('assets/defessasom.mp3')
+
 
 
 # ----- Inicia estruturas de dados
@@ -207,6 +209,7 @@ def tela_do_jogo(tela):
         if state == PLAYING:
             hits = pygame.sprite.spritecollide(gk, all_ball, True, pygame.sprite.collide_mask)
             if len(hits) > 0 or ball.rect.right == WIDTH or ball.rect.left == 0:
+                defesasom.play()
                 ball.kill()
                 lives -= 1
                 hits *= 0
