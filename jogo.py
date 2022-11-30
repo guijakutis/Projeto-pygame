@@ -24,4 +24,4 @@ while state != MISSING:
         state = MISSING
 
 # ===== Finalização =====
-pygame.quit() 
+pygame.quit()

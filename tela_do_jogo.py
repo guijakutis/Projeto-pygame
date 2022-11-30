@@ -293,13 +293,15 @@ def tela_do_jogo(tela):
 
         font = pygame.font.SysFont(None, 30)
         text = font.render('SCORE: {0}'.format(score), True, (255, 255, 255))
-        text2 = font.render('CHANCES: {0}'.format(lives), True, (255, 255, 255))
+        text2 = font.render('CHANCES: {0}'.format(lives), True, (255, 255, 255))        
+        text3 = font.render('HIGH SCORE: 6', True, (255, 255, 255))
 
     # ----- Gera saídas
         window.fill((0, 0, 0))  # Preenche com a cor branca
         window.blit(background, (0, 0))
         window.blit(text, (10, 10))
         window.blit(text2, (10, 40))
+        window.blit(text3, (10, 70))
     # Desenhando
         all_sprites.draw(window)
 
