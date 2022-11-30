@@ -7,12 +7,12 @@ DONE = 0
 PLAYING = 1
 
 
-def tela_inicial(screen):
+def tela_gameover(screen):
     # Variável para o ajuste de velocidade
     clock = pygame.time.Clock()
 
     # Carrega o fundo da tela inicial
-    tela = pygame.image.load('assets/FUNDOGAME1.png').convert()
+    tela = pygame.image.load('assets/').convert()
     tela_rect = tela.get_rect()
     
     running = True
