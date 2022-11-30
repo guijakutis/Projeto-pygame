@@ -22,5 +22,6 @@ while state != MISSING:
         state = tela_do_jogo(window)
     elif state == OVER:
         state = tela_gameover(window)
+
 # ===== Finalização =====
 pygame.quit() 
