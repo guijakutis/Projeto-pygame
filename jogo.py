@@ -20,8 +20,8 @@ while state != MISSING:
         state = tela_inicial(window)
     elif state == PLAYING:
         state = tela_do_jogo(window)
-    elif state == OVER:
-        state = tela_gameover(window)
+    else:
+        state = MISSING
 
 # ===== Finalização =====
 pygame.quit() 
