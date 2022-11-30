@@ -4,6 +4,10 @@ from pygame import *
 import random
 import math
 
+pygame.init()
+pygame.mixer.init()
+
+# ----- Gera tela principal
 WIDTH = 600
 HEIGHT = 500
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -19,18 +23,13 @@ aim_img = pygame.image.load('assets/aim.png').convert_alpha()
 aim_img = pygame.transform.scale(aim_img, (50, 50))
 gk_img = pygame.image.load('assets/gkparado.png').convert_alpha()
 gk_img = pygame.transform.scale(gk_img, (200, 200))
-gkaltodir_img = pygame.image.load('assets/gkaltodir.png').convert_alpha()
-gkaltodir_img = pygame.transform.scale(gkaltodir_img, (200, 200))
-gkaltoesq_img = pygame.image.load('assets/gkaltoesq.png').convert_alpha()
-gkaltoesq_img = pygame.transform.scale(gkaltoesq_img, (200, 200))
-gkbaixodir_img = pygame.image.load('assets/gkbaixodir.png').convert_alpha()
-gkbaixodir_img = pygame.transform.scale(gkbaixodir_img, (200, 200))
-gkbaixoesq_img = pygame.image.load('assets/gkbaixoesq.png').convert_alpha()
-gkbaixoesq_img = pygame.transform.scale(gkbaixoesq_img, (200, 200))
-gkaltomeio_img = pygame.image.load('assets/gkaltomeio.png').convert_alpha()
-gkaltomeio_img = pygame.transform.scale(gkaltomeio_img, (200, 200))
-gkbaixomeio_img = pygame.image.load('assets/gkbaixomeio.png').convert_alpha()
-gkbaixomeio_img = pygame.transform.scale(gkbaixomeio_img, (200, 200))
+
+# Carrega os sons do jogo
+pygame.mixer.music.load('assets/fundosom.mp3')
+pygame.mixer.music.set_volume(0.4)
+chutesom = pygame.mixer.Sound('assets/chutesom.mp3')
+golsom = pygame.mixer.Sound('assets/golacosom.mp3')
+finalsom = pygame.mixer.Sound('assets/finalsom.mp3')
 
 
 # ----- Inicia estruturas de dados
@@ -160,6 +159,7 @@ def tela_do_jogo(tela):
     lives = 3
 
 # ===== Loop principal =====
+    pygame.mixer.music.play(loops=-1)
     while state != DONE:
         clock.tick(FPS)
     # ----- Trata eventos
@@ -179,11 +179,11 @@ def tela_do_jogo(tela):
                     if event.key == pygame.K_RIGHT:
                         aim.speedx += 10
                     if event.key == pygame.K_SPACE:
+                        chutesom.play()
                         dx, dy = aim.rect.x - ball.rect.x, aim.rect.y - ball.rect.y
                         dist = math.hypot(dx, dy)
                         dx = dx / dist
                         dy = dy / dist
-                        #y = 10 - aim.y / 100
                         ball.speedx = dx * 5
                         ball.speedy = dy * 5
                         gk.speedx = random.randint(-7, 7)
@@ -211,6 +211,7 @@ def tela_do_jogo(tela):
                 hits *= 0
                 state = MISSING
             elif ball.rect.top == 130 and ball.rect.left >= 80:
+                golsom.play()
                 score += 1
                 state = PLAYING
                 gk.speedx = 0
@@ -224,6 +225,7 @@ def tela_do_jogo(tela):
                 all_sprites.add(ball)
                 all_ball.add(ball)
             elif ball.rect.top == 130 and ball.rect.right <= WIDTH - 95:
+                golsom.play()
                 score += 1
                 state = PLAYING
                 gk.speedx = 0
@@ -237,6 +239,7 @@ def tela_do_jogo(tela):
                 all_sprites.add(ball)
                 all_ball.add(ball)
             elif ball.rect.top >= 130 and ball.rect.right == WIDTH - 95:
+                golsom.play()
                 score += 1
                 state = PLAYING
                 gk.speedx = 0
@@ -250,6 +253,7 @@ def tela_do_jogo(tela):
                 all_sprites.add(ball)
                 all_ball.add(ball)
             elif ball.rect.top >= 130 and ball.rect.left == 80:
+                golsom.play()
                 score += 1
                 state = PLAYING
                 gk.speedx = 0
@@ -265,6 +269,9 @@ def tela_do_jogo(tela):
         elif state == MISSING:
             now = pygame.time.get_ticks()
             if lives == 0:
+                #finalsom.play()
+                #time.sleep(10)
+                
                 state = DONE
             else:
                 state = PLAYING
