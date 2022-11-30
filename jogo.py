@@ -1,0 +1,26 @@
+import pygame
+import random
+from telainicial import tela_inicial
+from tela_do_jogo import tela_do_jogo
+
+
+pygame.init()
+pygame.mixer.init()
+
+# ----- Gera tela principal
+window = pygame.display.set_mode((600, 500 ))
+pygame.display.set_caption('Penalty')
+DONE = 0
+PLAYING = 1
+MISSING = 2
+state = DONE
+while state != MISSING:
+    if state == DONE:
+        state = tela_inicial(window)
+    elif state == PLAYING:
+        state = tela_do_jogo(window)
+    else:
+        state = MISSING
+
+# ===== Finalização =====
+pygame.quit() 
