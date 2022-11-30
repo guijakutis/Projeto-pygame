@@ -2,7 +2,9 @@ import pygame
 import random
 from os import path
 
-
+MISSING = 2
+DONE = 0
+PLAYING = 1
 
 
 def tela_inicial(tela):
@@ -23,11 +25,11 @@ def tela_inicial(tela):
         for event in pygame.event.get():
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = 2
+                state = MISSING
                 running = False
 
             if event.type == pygame.KEYUP:
-                state = 0
+                state = DONE
                 running = False
 
         # A cada loop, redesenha o fundo e os sprites
