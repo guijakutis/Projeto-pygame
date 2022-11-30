@@ -7,13 +7,13 @@ DONE = 0
 PLAYING = 1
 
 
-def tela_inicial(tela):
+def tela_inicial(screen):
     # Variável para o ajuste de velocidade
     clock = pygame.time.Clock()
 
     # Carrega o fundo da tela inicial
-    tela = pygame.image.load('FUNDOGAME1.png').convert()
-    tela.rect = tela.get_rect()
+    tela = pygame.image.load('assets/FUNDOGAME1.png').convert()
+    tela_rect = tela.get_rect()
     
     running = True
     while running:
@@ -29,12 +29,12 @@ def tela_inicial(tela):
                 running = False
 
             if event.type == pygame.KEYUP:
-                state = DONE
+                state = PLAYING
                 running = False
 
         # A cada loop, redesenha o fundo e os sprites
-        tela.fill(0,0,0)
-        tela.blit(tela, tela.rect)
+        screen.fill((0,0,0))
+        screen.blit(tela, tela_rect)
 
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()
